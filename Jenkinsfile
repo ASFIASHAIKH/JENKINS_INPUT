@@ -8,8 +8,7 @@ pipeline {
                 git 'https://github.com/ASFIASHAIKH/JENKINS_INPUT.git'
             }
         }
-    
-    stages {
+        
         stage('Terraform Prompt') {
             steps {
                 script {
