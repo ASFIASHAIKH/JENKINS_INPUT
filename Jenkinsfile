@@ -6,7 +6,8 @@ pipeline {
             steps {
                 script {
                     def userInput = input(
-                        id: 'userInput', message: 'Select Terraform action to perform',
+                        id: 'userInput',
+                        message: 'Select Terraform action to perform',
                         parameters: [
                             choice(choices: ['apply', 'destroy'], description: 'Select Terraform action', name: 'TERRAFORM_ACTION')
                         ]
