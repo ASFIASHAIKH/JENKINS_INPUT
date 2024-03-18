@@ -1,38 +1,39 @@
 pipeline {
-    agent any 
-    
-    parameters {
-        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform Action')
-    }
+    agent any
     
     stages {
-        stage('Terraform Apply') { 
+        stage('Prompt User') {
             steps {
                 script {
-                    if (params.ACTION == 'apply') {
-                        // Execute Terraform apply command
-                        sh 'terraform apply -auto-approve'
-                    }
+                    userInput = input(
+                        message: 'Select Terraform action:',
+                        parameters: [
+                            choice(choices: ['Apply', 'Destroy'], description: 'Select Terraform action')
+                        ]
+                    )
                 }
             }
         }
-        
-        stage('Terraform Destroy') {
+        stage('Execute Terraform') {
             steps {
                 script {
-                    if (params.ACTION == 'destroy') {
-                        // Execute Terraform destroy command
+                    if (userInput == 'Apply') {
+                        sh 'terraform apply -auto-approve'
+                    } else if (userInput == 'Destroy') {
                         sh 'terraform destroy -auto-approve'
+                    } else {
+                        error 'Invalid option selected'
                     }
                 }
             }
         }
     }
-
     post { 
         always { 
             echo 'Deleting Project now !! '
             deleteDir()
         }
+    
     }
+
 }
