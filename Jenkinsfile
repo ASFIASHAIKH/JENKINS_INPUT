@@ -10,9 +10,8 @@ pipeline {
             steps {
                 script {
                     if (params.ACTION == 'apply') {
-                            // Execute Terraform apply command
-                            sh 'terraform apply -auto-approve'
-                        }
+                        // Execute Terraform apply command
+                        sh 'terraform apply -auto-approve'
                     }
                 }
             }
@@ -22,13 +21,13 @@ pipeline {
             steps {
                 script {
                     if (params.ACTION == 'destroy') {
-                            // Execute Terraform destroy command
-                            sh 'terraform destroy -auto-approve'
-                        }
+                        // Execute Terraform destroy command
+                        sh 'terraform destroy -auto-approve'
                     }
                 }
             }
         }
+    }
 
     post { 
         always { 
@@ -36,3 +35,4 @@ pipeline {
             deleteDir()
         }
     }
+}
