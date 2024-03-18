@@ -8,9 +8,9 @@ pipeline {
             steps {
                 script {
                     // Execute Terraform command based on user Input
-                    if {params.ACTION == 'apply'}  {
+                    if (params.ACTION == 'apply') {
                         sh 'terraform apply -auto-approve'
-                    } else {params.ACTION == 'destroy'} {
+                    } else (params.ACTION == 'destroy') {
                         sh 'terraform destroy -auto-approve'
                     }
                 }
