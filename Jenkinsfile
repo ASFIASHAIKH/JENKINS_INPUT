@@ -12,6 +12,7 @@ pipeline {
                         ]
                     )
                     
+                    // Accessing the user input using the correct field name
                     if (userInput.TERRAFORM_ACTION == 'apply') {
                         echo "Executing Terraform apply..."
                         sh 'terraform apply -auto-approve'
@@ -25,6 +26,7 @@ pipeline {
             }
         }
     }
+
     post {
         always {
             echo 'Cleaning up...'
