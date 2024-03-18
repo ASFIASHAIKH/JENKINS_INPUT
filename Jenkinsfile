@@ -1,6 +1,7 @@
 pipeline {
     agent any
     
+    stages {
         stage('Terraform Execution') {
             steps {
                 script {
@@ -41,6 +42,7 @@ pipeline {
                 }
             }
         }
+    }
 
     post {
         always {
