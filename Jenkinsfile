@@ -12,16 +12,18 @@ pipeline {
                             choice(choices: ['apply', 'destroy'], description: 'Select Terraform action', name: 'TERRAFORM_ACTION')
                         ]
                     )
-                    
-                    // Accessing the user input using the correct field name
-                    if (userInput.TERRAFORM_ACTION == 'apply') {
-                        echo "Executing Terraform apply..."
+                }
+            }
+        }
+        
+        stage('Terraform Actions') { 
+            steps {
+                script {
+                    // Execute Terraform command based on user Input
+                    if (params.ACTION == 'apply') {
                         sh 'terraform apply -auto-approve'
-                    } else if (userInput.TERRAFORM_ACTION == 'destroy') {
-                        echo "Executing Terraform destroy..."
+                    } else if (params.ACTION == 'destroy') {
                         sh 'terraform destroy -auto-approve'
-                    } else {
-                        error "Invalid option selected"
                     }
                 }
             }
