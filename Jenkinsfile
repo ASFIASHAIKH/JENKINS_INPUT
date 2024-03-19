@@ -1,8 +1,14 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_ACCESS_KEY_ID = ''
+        AWS_SECRET_ACCESS_KEY = ''
+        AWS_DEFAULT_REGION = 'ap-south-1'
+    }
+
     stages {
-        stage('Debug Credentials') {
+        stage('Set Environment Variables') {
             steps {
                 script {
                     withCredentials([[
@@ -10,13 +16,12 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
-                        echo "AWS_ACCESS_KEY_ID: ${env.AWS_ACCESS_KEY_ID}"
-                        echo "AWS_SECRET_ACCESS_KEY: ${env.AWS_SECRET_ACCESS_KEY}"
-                        echo "AWS_DEFAULT_REGION: ${env.AWS_DEFAULT_REGION}"
+                        // Credentials will be automatically injected into environment variables
                     }
                 }
             }
         }
+
 
         stage('Terraform Init') {
             steps {
