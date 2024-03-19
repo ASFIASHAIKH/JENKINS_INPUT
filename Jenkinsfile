@@ -15,6 +15,16 @@ pipeline {
                 }
             }
         }
+
+        stage('Terraform Initialization') {
+            steps {
+                script {
+                    if (userInput != null) {
+                        sh 'terraform init'
+                    }
+                }
+            }
+        }
         
         stage('Terraform') {
             steps {
