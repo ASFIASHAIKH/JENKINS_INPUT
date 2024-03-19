@@ -5,12 +5,11 @@ pipeline {
         stage('Example') {
             steps {
                 script {
-                    def userInput = input(
-                        id: 'userInput',
+                    userInput = input(
                         message: 'Select Terraform action to perform: apply or destroy',
-                        parameters([
-                            choice(name: 'TERRAFORM_ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action?')
-                        ])
+                        parameters: [
+                            choice(name: 'TERRAFORM_ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action..')
+                        ]
                     )
                 }
             }
@@ -25,12 +24,13 @@ pipeline {
         }
         
         stage('Terraform Apply') { 
+            when {
+                expression { userInput.TERRAFORM_ACTION == 'apply' }
+            }
             steps {
                 script {
                     // Execute Terraform Apply command based on user Input
-                    if ("${params.TERRAFORM_ACTION}" == 'apply') {
-                        sh 'terraform apply --auto-approve'
-                    }
+                    sh 'terraform apply --auto-approve'
                 }
             }
         }
