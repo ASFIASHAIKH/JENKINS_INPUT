@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('Git Checkout') {
             steps {
                 // Checkout the Git repository containing Terraform files
                 git 'https://github.com/ASFIASHAIKH/JENKINS_INPUT.git'
@@ -31,9 +31,10 @@ pipeline {
             }
         }
         
-        stage('Terraform apply') { 
+        stage('Terraform Apply') { 
             steps {
                 script {
+                    $class: 'AmazonWebServicesCredentialsBinding'
                     // Execute Terraform Apply command based on user Input
                         sh 'terraform apply --auto-approve'
                     }
