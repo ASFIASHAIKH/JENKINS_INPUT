@@ -2,27 +2,20 @@ pipeline {
     agent any
 
     stages {
-        stage('Git Checkout') {
-            steps {
-                // Checkout the Git repository containing Terraform files
-                git 'https://github.com/ASFIASHAIKH/JENKINS_INPUT.git'
-            }
-        }
-        
-        stage('Terraform Prompt') {
+        stage('Example') {
             steps {
                 script {
                     def userInput = input(
                         id: 'userInput',
                         message: 'Select Terraform action to perform: apply or destroy',
-                        parameters: [
-                            choice(choices: ['apply', 'destroy'], description: 'Select Terraform action', name: 'TERRAFORM_ACTION')
-                        ]
+                        parameters {
+                            choice(name: 'TERRAFORM_ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action?')
+                        }
                     )
                 }
             }
         }
-        
+
         stage('Terraform init') {
             steps {
                 script {
