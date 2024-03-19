@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-        stage('Set Environment Variables') {
+        stage('Environment Variables') {
             steps {
                 script {
                     withCredentials([[
@@ -33,32 +33,17 @@ pipeline {
             }
         }
 
-        stage('Prompt for Terraform Action') {
+        stage('Terraform Action') {
             steps {
                 script {
-                    // Prompt user for input during runtime
-                    def userInput = input(
-                        id: 'userInput',
-                        message: 'Select Terraform action to execute: apply or destroy',
-                        ok: 'Continue',
-                        parameters: [choice(
-                            name: 'TerraAction',
-                            choices: ['apply', 'destroy'],
-                            description: 'Select Terraform action to execute'
-                        )]
-                    )
-
-                    echo "User input: ${userInput}" // Print out the userInput variable for debugging
-
-                    // Get user input and assign it to terraformAction variable
-                    //def terraformAction = userInput.TerraAction?:''
-
-                    // Validate user input
-                    if ("${userInput}" == 'apply' || "${userInput}" == 'destroy') {
-                        echo "Executing Terraform ${userInput}..."
-                        sh "terraform ${userInput} -auto-approve"
+                    if (userInput.APPLY && userInput.DESTROY) {
+                        error('Both apply and destroy options cannot be selected. Please select only one.')
                     } else {
-                        error "Invalid Terraform action selected: ${userInput}"
+                        if (userInput.APPLY) {
+                            sh 'terraform apply -auto-approve'
+                        } else if (userInput.DESTROY) {
+                            sh 'terraform destroy -auto-approve'
+                        }
                     }
                 }
             }
