@@ -34,13 +34,14 @@ pipeline {
         stage('Terraform Apply') { 
             steps {
                 script {
-                    $class: 'AmazonWebServicesCredentialsBinding'
                     // Execute Terraform Apply command based on user Input
+                    if ("${params.TERRAFORM_ACTION}" == 'apply') {
                         sh 'terraform apply --auto-approve'
                     }
                 }
             }
         }
+    }
 
     post {
         always {
