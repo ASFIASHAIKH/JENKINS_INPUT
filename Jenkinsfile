@@ -1,7 +1,7 @@
 pipeline {
     agent any
     
-     environment {
+    environment {
         AWS_ACCESS_KEY_ID = ''
         AWS_SECRET_ACCESS_KEY = ''
         AWS_DEFAULT_REGION = 'ap-south-1'
@@ -23,7 +23,6 @@ pipeline {
             }
         }
 
-    stages {
         stage('Terraform Initialization') {
             steps {
                 script {
@@ -46,7 +45,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Terraform') {
             steps {
                 script {
