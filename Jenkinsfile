@@ -1,33 +1,14 @@
 pipeline {
     agent any
-
-        environment {
-        AWS_ACCESS_KEY_ID = ''
-        AWS_SECRET_ACCESS_KEY = ''
-    }
     
     stages {
-        stage('Set Environment Variables') {
-            steps {
-                script {
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId:     'asfiya_Aws_access_key',
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        // Environment variables set
-                    }
-                }
-            }
-        }
-        
         stage('Input') {
             steps {
                 script {
                     userInput = input(
                         id: 'userInput', message: 'Select an action to perform',
                         parameters: [
+                            booleanParam(name: 'INIT', defaultValue: false, description: 'Initialize Terraform'),
                             booleanParam(name: 'APPLY', defaultValue: false, description: 'Apply Terraform resources'),
                             booleanParam(name: 'DESTROY', defaultValue: false, description: 'Destroy Terraform resources')
                         ]
@@ -35,15 +16,18 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Terraform Initialization') {
+            when {
+                expression { userInput.INIT }
+            }
             steps {
                 script {
                     sh 'terraform init'
                 }
             }
         }
-        
+
         stage('Terraform') {
             steps {
                 script {
