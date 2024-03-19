@@ -33,6 +33,24 @@ pipeline {
             }
         }
 
+        stage('Prompt for Terraform Action') {
+            steps {
+                script {
+                    // Prompt user for input during runtime
+                    def userInput = input(
+                        id: 'userInput',
+                        message: 'Select Terraform action to execute: apply or destroy',
+                        ok: 'Continue',
+                        parameters: [choice(
+                            name: 'TerraAction',
+                            choices: ['apply', 'destroy'],
+                            description: 'Select Terraform action to execute'
+                        )]
+                    )
+                }
+            }
+        }
+
         stage('Terraform Action') {
             steps {
                 script {
