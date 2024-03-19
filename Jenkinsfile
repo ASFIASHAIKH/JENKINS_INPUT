@@ -1,10 +1,9 @@
 pipeline {
     agent any
     
-    environment {
-        // Define environment variables for Terraform to use
-        AWS_ACCESS_KEY_ID     = credentials("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY = credentials("AWS_SECRET_ACCESS_KEY")
+   environment {
+        AWS_ACCESS_KEY_ID     = credentials('asfiya_Aws_access_key')
+        AWS_SECRET_ACCESS_KEY = credentials('asfiya_Aws_secret_key')
     }
     stages {
         stage('Terraform Initialization') {
