@@ -11,11 +11,12 @@ pipeline {
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                     ]]) {
+                        // Environment variables set
                     }
                 }
             }
         }
-    stages {
+        
         stage('Input') {
             steps {
                 script {
@@ -33,8 +34,7 @@ pipeline {
         stage('Terraform Initialization') {
             steps {
                 script {
-                        sh 'terraform init'
-                    }
+                    sh 'terraform init'
                 }
             }
         }
