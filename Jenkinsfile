@@ -41,17 +41,6 @@ pipeline {
                 }
             }
         }
-        
-        stage('Terraform destroy') { 
-            steps {
-                script {
-                    // Execute Terraform Destroy command based on user Input
-                    if ("${params.TERRAFORM_ACTION}" == 'destroy') {
-                        sh 'terraform destroy --auto-approve'
-                    }
-                }
-            }
-        }
     }
 
     post {
