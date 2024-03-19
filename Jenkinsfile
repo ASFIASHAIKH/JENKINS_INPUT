@@ -21,7 +21,13 @@ pipeline {
         stage('Terraform init') {
             steps {
                 script {
-                    sh 'terraform init'
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                        sh 'terraform init'
+                    }
                 }
             }
         }
@@ -30,8 +36,8 @@ pipeline {
             steps {
                 script {
                     // Execute Terraform Apply command based on user Input
-                    if ("${params.TERRAFORM_ACTION}" == 'apply') {
-                        sh 'terraform apply --auto-approve'
+                    if (userInput == 'apply') {
+                        sh 'terraform apply -auto-approve'
                     }
                 }
             }
