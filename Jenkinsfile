@@ -5,6 +5,15 @@ pipeline {
     }
 
     stages {
+        stage('Terraform Init') {
+            steps {
+                script {
+                    // Initialize Terraform
+                    sh 'terraform init'
+                }
+            }
+        }
+
         stage('Terraform Prompt') {
             steps {
                 script {
@@ -18,26 +27,16 @@ pipeline {
             }
         }
 
-        stage('Terraform init') {
+        stage('Terraform Apply/Destroy') {
             steps {
                 script {
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
-                    ]]) {
-                        sh 'terraform init'
-                    }
-                }
-            }
-        }
-        
-        stage('Terraform Apply') { 
-            steps {
-                script {
-                    // Execute Terraform Apply command based on user Input
+                    // Execute Terraform Apply or Destroy based on user input
                     if (userInput == 'apply') {
                         sh 'terraform apply -auto-approve'
+                    } else if (userInput == 'destroy') {
+                        sh 'terraform destroy -auto-approve'
+                    } else {
+                        error "Invalid option selected: ${userInput}"
                     }
                 }
             }
