@@ -2,13 +2,21 @@ pipeline {
     agent any
     
     stages {
+        stage('Terraform Initialization') {
+            steps {
+                script {
+                    // Execute terraform init
+                    sh 'terraform init'
+                }
+            }
+        }
+
         stage('Input') {
             steps {
                 script {
                     userInput = input(
                         id: 'userInput', message: 'Select an action to perform',
                         parameters: [
-                            booleanParam(name: 'INIT', defaultValue: false, description: 'Initialize Terraform'),
                             booleanParam(name: 'APPLY', defaultValue: false, description: 'Apply Terraform resources'),
                             booleanParam(name: 'DESTROY', defaultValue: false, description: 'Destroy Terraform resources')
                         ]
@@ -17,17 +25,6 @@ pipeline {
             }
         }
         
-        stage('Terraform Initialization') {
-            when {
-                expression { userInput.INIT }
-            }
-            steps {
-                script {
-                    sh 'terraform init'
-                }
-            }
-        }
-
         stage('Terraform') {
             steps {
                 script {
