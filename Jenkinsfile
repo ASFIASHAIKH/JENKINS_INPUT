@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     environment {
         AWS_ACCESS_KEY_ID = ''
         AWS_SECRET_ACCESS_KEY = ''
@@ -23,46 +23,48 @@ pipeline {
             }
         }
 
-        stage('Terraform Initialization') {
+        stage('Terraform Execution') {
             steps {
                 script {
-                    // Execute terraform init
+                    // Terraform initialization
+                    echo 'Initializing Terraform...'
                     sh 'terraform init'
                 }
             }
         }
 
-        stage('Input') {
+        stage('Prompt for Terraform Action') {
             steps {
                 script {
-                    userInput = input(
-                        id: 'userInput', message: 'Select an action to perform',
-                        parameters: [
-                            booleanParam(name: 'APPLY', defaultValue: false, description: 'Apply Terraform resources'),
-                            booleanParam(name: 'DESTROY', defaultValue: false, description: 'Destroy Terraform resources')
-                        ]
+                    // Prompt user for input during runtime
+                    def userInput = input(
+                        id: 'userInput',
+                        message: 'Select Terraform action to execute: apply or destroy',
+                        ok: 'Continue',
+                        parameters: [choice(
+                            name: 'TerraAction',
+                            choices: ['apply', 'destroy'],
+                            description: 'Select Terraform action to execute'
+                        )]
                     )
-                }
-            }
-        }
 
-        stage('Terraform') {
-            steps {
-                script {
-                    if (userInput.APPLY && userInput.DESTROY) {
-                        error('Both apply and destroy options cannot be selected. Please select only one.')
+                    echo "User input: ${userInput}" // Print out the userInput variable for debugging
+
+                    // Get user input and assign it to terraformAction variable
+                    //def terraformAction = userInput.TerraAction?:''
+
+                    // Validate user input
+                    if ("${userInput}" == 'apply' || "${userInput}" == 'destroy') {
+                        echo "Executing Terraform ${userInput}..."
+                        sh "terraform ${userInput} -auto-approve"
                     } else {
-                        if (userInput.APPLY) {
-                            sh 'terraform apply -auto-approve'
-                        } else if (userInput.DESTROY) {
-                            sh 'terraform destroy -auto-approve'
-                        }
+                        error "Invalid Terraform action selected: ${userInput}"
                     }
                 }
             }
         }
     }
-    
+
     post {
         always {
             echo 'Cleaning up...'
