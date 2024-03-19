@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Get Terraform Configuration') {
+        stage('Checkout') {
             steps {
                 // Checkout the Git repository containing Terraform files
                 git 'https://github.com/ASFIASHAIKH/JENKINS_INPUT.git'
@@ -14,25 +14,37 @@ pipeline {
                 script {
                     def userInput = input(
                         id: 'userInput',
-                        message: 'Select Terraform action to perform: apply or destroy',
+                        message: 'Select Terraform action to perform: apply or destroy'
                         parameters: [
                             choice(choices: ['apply', 'destroy'], description: 'Select Terraform action', name: 'TERRAFORM_ACTION')
                         ]
                     )
-                    echo "User input: ${userInput}"
                 }
             }
         }
         
-        stage('Terraform Actions') { 
+        stage('Terraform init') {
             steps {
                 script {
-                    // Execute Terraform command based on user Input
-                    if ("${env.TERRAFORM_ACTION}" == 'apply') {
-                        sh 'terraform apply -auto-approve'
-                    } else if ("${env.TERRAFORM_ACTION}" == 'destroy') {
-                        sh 'terraform destroy -auto-approve'
+                sh 'terraform init'
+            
+                }
+            }
+        }
+        
+        stage('Terraform apply') { 
+            steps {
+                script {
+                    // Execute Terraform Apply command based on user Input
+                        sh 'terraform ${apply} --auto-approve'
                     }
+                }
+            }
+        stage('Terraform destroy') { 
+            steps {
+                script {
+                    // Execute Terraform Destroy command based on user Input
+                        sh 'terraform ${destroy} --auto-approve'
                 }
             }
         }
