@@ -47,7 +47,6 @@ pipeline {
                             description: 'Select Terraform action to execute'
                         )]
                     )
-                    echo "User input: ${userInput}"
                     if (userInput == 'apply' && userInput == 'destroy') {
                         error('Both apply and destroy options cannot be selected. Please select only one.')
                     } else {
