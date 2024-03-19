@@ -1,10 +1,20 @@
 pipeline {
     agent any
-    environment {
-        AWS_ACCESS_KEY_ID     = credentials('asfiya_Aws_secret_key')
-        AWS_SECRET_ACCESS_KEY = credentials('asfiya_Aws_access_key')
-    }
     
+    stages {
+        stage('Set Environment Variables') {
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId:     'asfiya_Aws_access_key',
+                        accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                        secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                    ]]) {
+                    }
+                }
+            }
+        }
     stages {
         stage('Input') {
             steps {
@@ -23,7 +33,6 @@ pipeline {
         stage('Terraform Initialization') {
             steps {
                 script {
-                    if (userInput != null) {
                         sh 'terraform init'
                     }
                 }
@@ -35,8 +44,6 @@ pipeline {
                 script {
                     if (userInput.APPLY && userInput.DESTROY) {
                         error('Both apply and destroy options cannot be selected. Please select only one.')
-                    } else if (!userInput.APPLY && !userInput.DESTROY) {
-                        error('Please select either apply or destroy option.')
                     } else {
                         if (userInput.APPLY) {
                             sh 'terraform apply -auto-approve'
