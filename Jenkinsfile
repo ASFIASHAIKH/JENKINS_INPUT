@@ -1,26 +1,10 @@
 pipeline {
     agent any
-
-       environment {
-        AWS_ACCESS_KEY_ID = ''
-        AWS_SECRET_ACCESS_KEY = ''
+    environment {
+        aws-access-key-id     = credentials('aws_access_key')
+        aws-secret-access-key = credentials('aws_secret_key')
     }
-
-    stages {
-        stage('Set Environment Variables') {
-            steps {
-                script {
-                    withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding',
-                        accessKeyVariable: 'aws-access-key-id',
-                        secretKeyVariable: 'aws-secret-access-key'
-                    ]]) {
-                        // Credentials will be automatically injected into environment variables
-                    }
-                }
-            }
-        }
-
+    
     stages {
         stage('Input') {
             steps {
@@ -71,5 +55,4 @@ pipeline {
             deleteDir()
         }
     }
-}
 }
