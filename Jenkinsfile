@@ -47,19 +47,13 @@ pipeline {
                             description: 'Select Terraform action to execute'
                         )]
                     )
-                }
-            }
-        }
-
-        stage('Terraform Action') {
-            steps {
-                script {
-                    if (userInput.APPLY && userInput.DESTROY) {
+                    echo "User input: ${userInput}"
+                    if (userInput == 'apply' && userInput == 'destroy') {
                         error('Both apply and destroy options cannot be selected. Please select only one.')
                     } else {
-                        if (userInput.APPLY) {
+                        if (userInput == 'apply')  {
                             sh 'terraform apply -auto-approve'
-                        } else if (userInput.DESTROY) {
+                        } else if (userInput == 'destroy') {
                             sh 'terraform destroy -auto-approve'
                         }
                     }
