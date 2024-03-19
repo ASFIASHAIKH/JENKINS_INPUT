@@ -1,8 +1,13 @@
 pipeline {
     agent any
 
+        environment {
+        AWS_ACCESS_KEY_ID = credentials("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_ID = credentials("AWS_SECRET_ACCESS_ID")
+        }
+
     stages {
-        stage('Example') {
+        stage('Terraform Prompt') {
             steps {
                 script {
                     userInput = input(
@@ -18,7 +23,11 @@ pipeline {
         stage('Terraform init') {
             steps {
                 script {
-                    sh 'terraform init'
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                    ]]) {
+                        sh 'terraform init'
+                    }
                 }
             }
         }
