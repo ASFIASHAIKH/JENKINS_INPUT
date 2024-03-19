@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        AWS_DEFAULT_REGION = 'your-aws-region'
+        AWS_DEFAULT_REGION = 'ap-south-1'
     }
 
     stages {
@@ -27,9 +27,6 @@ pipeline {
         }
         
         stage('Terraform Apply') { 
-            when {
-                expression { userInput.TERRAFORM_ACTION == 'apply' }
-            }
             steps {
                 script {
                     // Execute Terraform Apply command based on user Input
