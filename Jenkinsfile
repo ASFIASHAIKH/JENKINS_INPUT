@@ -8,9 +8,9 @@ pipeline {
                     def userInput = input(
                         id: 'userInput',
                         message: 'Select Terraform action to perform: apply or destroy',
-                        parameters {
+                        parameters([
                             choice(name: 'TERRAFORM_ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action?')
-                        }
+                        ])
                     )
                 }
             }
