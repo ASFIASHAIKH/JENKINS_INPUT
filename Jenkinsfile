@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        // Define the Terraform tool
+        terraform 'terraform'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -26,6 +31,7 @@ pipeline {
         stage('Terraform init') {
             steps {
                 script {
+                    // Execute Terraform init using the installed Terraform
                     sh 'terraform init'
                 }
             }
