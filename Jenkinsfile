@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Prepare Workspace') {
+        stage('Get Terraform Configuration') {
             steps {
                 // Checkout the Git repository containing Terraform files
                 git 'https://github.com/ASFIASHAIKH/JENKINS_INPUT.git'
