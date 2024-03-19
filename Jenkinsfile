@@ -14,7 +14,7 @@ pipeline {
                 script {
                     def userInput = input(
                         id: 'userInput',
-                        message: 'Select Terraform action to perform: apply or destroy'
+                        message: 'Select Terraform action to perform: apply or destroy',
                         parameters: [
                             choice(choices: ['apply', 'destroy'], description: 'Select Terraform action', name: 'TERRAFORM_ACTION')
                         ]
@@ -26,8 +26,7 @@ pipeline {
         stage('Terraform init') {
             steps {
                 script {
-                sh 'terraform init'
-            
+                    sh 'terraform init'
                 }
             }
         }
@@ -36,15 +35,20 @@ pipeline {
             steps {
                 script {
                     // Execute Terraform Apply command based on user Input
-                        sh 'terraform ${apply} --auto-approve'
+                    if ("${params.TERRAFORM_ACTION}" == 'apply') {
+                        sh 'terraform apply --auto-approve'
                     }
                 }
             }
+        }
+        
         stage('Terraform destroy') { 
             steps {
                 script {
                     // Execute Terraform Destroy command based on user Input
-                        sh 'terraform ${destroy} --auto-approve'
+                    if ("${params.TERRAFORM_ACTION}" == 'destroy') {
+                        sh 'terraform destroy --auto-approve'
+                    }
                 }
             }
         }
