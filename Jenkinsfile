@@ -30,6 +30,7 @@ pipeline {
             steps {
                 script {
                     // Execute Terraform Apply command based on user Input
+                    if ("${params.TERRAFORM_ACTION}" == 'apply') {
                     sh 'terraform apply --auto-approve'
                 }
             }
